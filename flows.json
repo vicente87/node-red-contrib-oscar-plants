@@ -1,0 +1,415 @@
+[
+    {
+        "id": "e77f046693d07b72",
+        "type": "subflow",
+        "name": "OSCAR Plant Services",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 20,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "533c151ac5429d6c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1300,
+                "y": 220,
+                "wires": [
+                    {
+                        "id": "bd2b4c56996cfe98",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "URL",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Nombre del Servicio",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Usuario",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Contraseña",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "meta": {
+            "module": "node-red-contrib-oscar-plants",
+            "version": "1.0.0",
+            "author": "Vicente Rodriguez <vicente.rdguezb@gmail.com>",
+            "desc": "Servicio Plants Clasification",
+            "keywords": "node-red, oscar, plants",
+            "license": "Apache-2.0"
+        },
+        "color": "#DDAA99",
+        "status": {
+            "x": 1180,
+            "y": 60,
+            "wires": [
+                {
+                    "id": "e7fd426fff22a566",
+                    "port": 0
+                },
+                {
+                    "id": "b13157aae65e891c",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "63e5bfec4147dea9",
+        "type": "http request",
+        "z": "e77f046693d07b72",
+        "name": "Plant Services Run",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 750,
+        "y": 220,
+        "wires": [
+            [
+                "20c897150805aff2"
+            ]
+        ]
+    },
+    {
+        "id": "b8426e521da9300d",
+        "type": "base64",
+        "z": "e77f046693d07b72",
+        "name": "",
+        "action": "",
+        "property": "payload",
+        "x": 560,
+        "y": 220,
+        "wires": [
+            [
+                "63e5bfec4147dea9"
+            ]
+        ]
+    },
+    {
+        "id": "20c897150805aff2",
+        "type": "string",
+        "z": "e77f046693d07b72",
+        "name": "Get Result",
+        "methods": [
+            {
+                "name": "delLeftMost",
+                "params": [
+                    {
+                        "type": "str",
+                        "value": "response"
+                    }
+                ]
+            }
+        ],
+        "prop": "payload",
+        "propout": "payload",
+        "object": "msg",
+        "objectout": "msg",
+        "x": 970,
+        "y": 220,
+        "wires": [
+            [
+                "bd2b4c56996cfe98",
+                "b13157aae65e891c"
+            ]
+        ]
+    },
+    {
+        "id": "533c151ac5429d6c",
+        "type": "change",
+        "z": "e77f046693d07b72",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "servidor_oscar",
+                "pt": "msg",
+                "to": "URL",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "username",
+                "pt": "msg",
+                "to": "Usuario",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "pass",
+                "pt": "msg",
+                "to": "Contraseña",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "imagen",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "plants",
+                "pt": "msg",
+                "to": "Nombre del Servicio",
+                "tot": "env"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 60,
+        "wires": [
+            [
+                "2db8c57161cd2f39",
+                "e7fd426fff22a566"
+            ]
+        ]
+    },
+    {
+        "id": "2db8c57161cd2f39",
+        "type": "function",
+        "z": "e77f046693d07b72",
+        "name": "Cargar Log",
+        "func": "msg.payload={\n\"username\":msg.username,\n\"password\":msg.pass\n\n}\nmsg.url= msg.servidor_oscar +\"/system/services/\"+msg.plants ;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 380,
+        "wires": [
+            [
+                "a64f6d1b0f2db68b"
+            ]
+        ]
+    },
+    {
+        "id": "0907b4d42fb8ca42",
+        "type": "http request",
+        "z": "e77f046693d07b72",
+        "name": "plants service",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": true,
+        "authType": "basic",
+        "senderr": true,
+        "headers": [],
+        "x": 460,
+        "y": 500,
+        "wires": [
+            [
+                "b1dbd576283a8573"
+            ]
+        ]
+    },
+    {
+        "id": "b1dbd576283a8573",
+        "type": "string",
+        "z": "e77f046693d07b72",
+        "name": "",
+        "methods": [
+            {
+                "name": "between",
+                "params": [
+                    {
+                        "type": "str",
+                        "value": "\"token\":\""
+                    },
+                    {
+                        "type": "str",
+                        "value": "\",\"input\""
+                    }
+                ]
+            }
+        ],
+        "prop": "payload",
+        "propout": "payload",
+        "object": "msg",
+        "objectout": "msg",
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "ac9fd137b8768a5d"
+            ]
+        ]
+    },
+    {
+        "id": "ac9fd137b8768a5d",
+        "type": "function",
+        "z": "e77f046693d07b72",
+        "name": "Get Token-Plants",
+        "func": "var  var1 = msg.payload;\n\nmsg.token_plants= var1;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\n//flow.set(\"token_cowsay\",\"\");\n",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 500,
+        "wires": [
+            [
+                "01530c44b591b9ac"
+            ]
+        ]
+    },
+    {
+        "id": "01530c44b591b9ac",
+        "type": "function",
+        "z": "e77f046693d07b72",
+        "name": "Enviar plants-token",
+        "func": "\nvar token_plants = msg.token_plants;\n\n\nmsg.headers = {\n    Authorization: \"Bearer \" + token_plants\n}\n\nmsg.payload = msg.imagen;\nmsg.url= msg.servidor_oscar+\"/run/\"+msg.plants;\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 500,
+        "wires": [
+            [
+                "b8426e521da9300d"
+            ]
+        ]
+    },
+    {
+        "id": "a64f6d1b0f2db68b",
+        "type": "change",
+        "z": "e77f046693d07b72",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "headers",
+                "pt": "msg",
+                "to": "{\t   \"Authorization\": 'Basic ' & $base64encode(\t       payload.username & ':' & payload.password\t   ) \t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 500,
+        "wires": [
+            [
+                "0907b4d42fb8ca42"
+            ]
+        ]
+    },
+    {
+        "id": "bd2b4c56996cfe98",
+        "type": "base64",
+        "z": "e77f046693d07b72",
+        "name": "",
+        "action": "",
+        "property": "payload",
+        "x": 1180,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e7fd426fff22a566",
+        "type": "change",
+        "z": "e77f046693d07b72",
+        "name": "Start Service",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Procesando...",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 890,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b13157aae65e891c",
+        "type": "change",
+        "z": "e77f046693d07b72",
+        "name": "End Service",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Terminado",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 890,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fb099d3d96d08bfd",
+        "type": "subflow:e77f046693d07b72",
+        "z": "b206d149aa21db68",
+        "name": "",
+        "x": 1780,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    }
+]
