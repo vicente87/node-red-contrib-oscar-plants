@@ -2,8 +2,8 @@
     {
         "id": "e77f046693d07b72",
         "type": "subflow",
-        "name": "OSCAR Plant Services",
-        "info": "",
+        "name": "OSCAR Plants Services",
+        "info": " \n<main>\n    <section>\n        <article>\n            <h3>About Plants </h3>\n            <p>Classify plant images among 10K species from the iNaturalist dataset.</p>\n            <ul>\n                <li>\n                    <a rel=\"stylesheet\" href=\"https://marketplace.deep-hybrid-datacloud.eu/modules/deep-oc-plants-classification-tf.html\">Plants species classifier</a>\n                </li>\n            </ul>\n        </article>\n        <article>\n            <h3>About Plants Service in OSCAR</h3>\n            <p>This example uses the pre-trained classification model by DEEP-Hybrid-DataCloud Plants species classifier and is prepared to be used with synchronous invocations.</p>\n            <p>For more information consult:</p>\n            <ul>\n                <li>\n                    <a rel=\"stylesheet\" href=\"https://github.com/grycap/oscar/tree/master/examples/plant-classification-sync\">Plants Service </a>\n                </li>\n            </ul>\n        </article>\n        <article>\n            <h3>Inputs</h3>\n            <p>The input variables will be the basic variables (OSCAR server url and credentials). In addition to the name that has been given to the plants service on the server. Inside the input <code> msg.payload </code> must be the text to write. With all these elements, the service token is searched and then a request is made to the service ( POST /run/{serviceName}).</p>\n            <ul>\n                <li>\n                    <a rel=\"stylesheet\" href=\"https://docs.oscar.grycap.net/api/\">Syns </a>\n                </li>\n                </ul>\n        </article>\n        <article>\n            <h3>Outputs</h3>\n            <p> The node returns through <code>msg.payload</code> plant classification image using Lasagne/Theano (base64), which can be used in image display nodes such as images preview node.</p>\n        </article>\n    </section>\n</main>\n<footer>\n    GryCAP\n</footer>\n ",
         "category": "",
         "in": [
             {
@@ -18,11 +18,11 @@
         ],
         "out": [
             {
-                "x": 1300,
+                "x": 1340,
                 "y": 220,
                 "wires": [
                     {
-                        "id": "bd2b4c56996cfe98",
+                        "id": "2e5b24cdbe85ce1e",
                         "port": 0
                     }
                 ]
@@ -30,35 +30,48 @@
         ],
         "env": [
             {
-                "name": "URL",
+                "name": "Server",
                 "type": "str",
-                "value": ""
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-globe"
+                }
             },
             {
-                "name": "Nombre del Servicio",
+                "name": "Service Name",
                 "type": "str",
-                "value": ""
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-pencil"
+                }
             },
             {
-                "name": "Usuario",
+                "name": "User",
                 "type": "str",
-                "value": ""
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-user-circle-o"
+                }
             },
             {
-                "name": "Contraseña",
-                "type": "str",
-                "value": ""
+                "name": "Password",
+                "type": "cred",
+                "ui": {
+                    "icon": "font-awesome/fa-key"
+                }
             }
         ],
         "meta": {
             "module": "node-red-contrib-oscar-plants",
+            "type": "oscar",
             "version": "1.0.0",
-            "author": "Vicente Rodriguez <vicente.rdguezb@gmail.com>",
+            "author": "Vicente Rodriguez <vicente.rdguezb@gmail.com, vrodben1@i3m.upv.es>",
             "desc": "Servicio Plants Clasification",
             "keywords": "node-red, oscar, plants",
             "license": "Apache-2.0"
         },
-        "color": "#DDAA99",
+        "color": "#3FADB5",
+        "icon": "font-awesome/fa-image",
         "status": {
             "x": 1180,
             "y": 60,
@@ -150,28 +163,28 @@
         "rules": [
             {
                 "t": "set",
-                "p": "servidor_oscar",
+                "p": "oscar_server",
                 "pt": "msg",
-                "to": "URL",
+                "to": "Server",
                 "tot": "env"
             },
             {
                 "t": "set",
                 "p": "username",
                 "pt": "msg",
-                "to": "Usuario",
+                "to": "User",
                 "tot": "env"
             },
             {
                 "t": "set",
                 "p": "pass",
                 "pt": "msg",
-                "to": "Contraseña",
+                "to": "Password",
                 "tot": "env"
             },
             {
                 "t": "set",
-                "p": "imagen",
+                "p": "image",
                 "pt": "msg",
                 "to": "payload",
                 "tot": "msg"
@@ -180,7 +193,7 @@
                 "t": "set",
                 "p": "plants",
                 "pt": "msg",
-                "to": "Nombre del Servicio",
+                "to": "Service Name",
                 "tot": "env"
             }
         ],
@@ -202,14 +215,14 @@
         "id": "2db8c57161cd2f39",
         "type": "function",
         "z": "e77f046693d07b72",
-        "name": "Cargar Log",
-        "func": "msg.payload={\n\"username\":msg.username,\n\"password\":msg.pass\n\n}\nmsg.url= msg.servidor_oscar +\"/system/services/\"+msg.plants ;\n\nreturn msg;",
+        "name": "Load Log",
+        "func": "msg.payload={\n\"username\":msg.username,\n\"password\":msg.pass\n\n}\nmsg.url = msg.oscar_server +\"/system/services/\"+msg.plants ;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 270,
+        "x": 260,
         "y": 380,
         "wires": [
             [
@@ -296,8 +309,8 @@
         "id": "01530c44b591b9ac",
         "type": "function",
         "z": "e77f046693d07b72",
-        "name": "Enviar plants-token",
-        "func": "\nvar token_plants = msg.token_plants;\n\n\nmsg.headers = {\n    Authorization: \"Bearer \" + token_plants\n}\n\nmsg.payload = msg.imagen;\nmsg.url= msg.servidor_oscar+\"/run/\"+msg.plants;\n\nreturn msg;\n\n",
+        "name": "Send plants-token",
+        "func": "\nvar token_plants = msg.token_plants;\n\n\nmsg.headers = {\n    Authorization: \"Bearer \" + token_plants\n}\n\nmsg.payload = msg.image;\nmsg.url = msg.oscar_server+\"/run/\"+msg.plants;\n\nreturn msg;\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -348,7 +361,9 @@
         "x": 1180,
         "y": 220,
         "wires": [
-            []
+            [
+                "2e5b24cdbe85ce1e"
+            ]
         ]
     },
     {
@@ -361,7 +376,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Procesando...",
+                "to": "Processing....",
                 "tot": "str"
             }
         ],
@@ -386,7 +401,7 @@
                 "t": "set",
                 "p": "payload",
                 "pt": "msg",
-                "to": "Terminado",
+                "to": "Finished....",
                 "tot": "str"
             }
         ],
@@ -402,12 +417,75 @@
         ]
     },
     {
-        "id": "fb099d3d96d08bfd",
-        "type": "subflow:e77f046693d07b72",
-        "z": "b206d149aa21db68",
-        "name": "",
-        "x": 1780,
-        "y": 440,
+        "id": "2e5b24cdbe85ce1e",
+        "type": "change",
+        "z": "e77f046693d07b72",
+        "name": "Clear Data",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pass",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "username",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "oscar_server",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "plants",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "image",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "token_plants",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "filename",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 340,
         "wires": [
             []
         ]
